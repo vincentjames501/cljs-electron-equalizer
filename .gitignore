@@ -5,3 +5,6 @@ resources/main.js
 figwheel_server.log
 .idea/
 *.iml
+release/
+.cache/
+node_modules/

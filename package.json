@@ -1,5 +1,8 @@
 {
-  "name": "Graphic Equalizer",
-  "version": "0.1.0",
-  "main": "resources/main.js"
+  "name": "GraphicEqualizer",
+  "version": "0.0.1",
+  "main": "resources/main.js",
+  "devDependencies": {
+    "gulp-electron": "0.0.9"
+  }
 }

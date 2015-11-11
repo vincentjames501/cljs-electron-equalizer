@@ -35,11 +35,13 @@
 (defn run-process
   [input output encoding-mode success-fn error-fn progress-fn]
   (let [duration (atom nil)
-        spawned-processes (.spawn proc "ffmpeg" (clj->js ["-y" ; Overwrite
-                                                          "-i" input ; Input File
-                                                          "-af" (get-encoding-opts encoding-mode) ; Equalizer
-                                                          output ; Output File
-                                                          ]))]
+        spawned-processes (.spawn proc
+                                  (str js/__dirname "/ffmpeg")
+                                  (clj->js ["-y"            ; Overwrite
+                                            "-i" input      ; Input File
+                                            "-af" (get-encoding-opts encoding-mode) ; Equalizer
+                                            output          ; Output File
+                                            ]))]
     (.on (.-stderr spawned-processes) "data" (partial parse-input duration progress-fn))
     (.on (.-stdout spawned-processes) "data" (partial parse-input duration progress-fn))
     (.on spawned-processes "error" error-fn)
