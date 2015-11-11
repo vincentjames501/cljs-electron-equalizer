@@ -1,0 +1,98 @@
+body {
+    -webkit-app-region: drag;
+}
+
+#content {
+    background: url("../img/bg.jpg");
+    color: white;
+    width: 350px;
+    height: 378px;
+    text-align: center;
+}
+
+#container {
+    padding: 20px;
+}
+
+.title {
+
+}
+
+img.drop-img {
+    width: 210px;
+    height: 210px;
+    margin-bottom: 20px;
+}
+
+.default-appear {
+    opacity: 0.01;
+    transition: opacity .5s ease-in;
+}
+
+.default-appear.default-appear-active {
+    opacity: 1;
+}
+
+.default-enter {
+    opacity: 0.01;
+}
+
+.default-enter.default-enter-active {
+    opacity: 1;
+    transition: opacity 1500ms ease-in;
+}
+
+.default-leave {
+    opacity: 1;
+}
+
+.default-leave.default-leave-active {
+    opacity: 0.01;
+    transition: opacity 1300ms ease-in;
+}
+
+#home {
+    margin-top: 15px;
+}
+
+#mode button {
+    width: 100%;
+    height: 55px;
+    margin-bottom: 30px;
+}
+
+#encoding {
+    margin-top: 15px;
+}
+
+#encoding .mdl-spinner {
+    width: 220px;
+    height: 220px;
+    margin-bottom: 20px;
+}
+
+#encoding button {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+#encoding .encoding-progress {
+    position: absolute;
+    font-size: 48px;
+    left: 0;
+    top: 150px;
+    width: 100%;
+}
+
+#encoding #complete {
+    pointer-events: none;
+    cursor: pointer;
+    width: 220px;
+    height: 220px;
+    margin-bottom: 10px;
+}
+
+#encoding #complete i {
+    font-size: 80px;
+    transform: translate(-35px,-12px);
+}
