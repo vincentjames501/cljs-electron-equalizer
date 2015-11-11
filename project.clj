@@ -2,20 +2,21 @@
   :source-paths ["src/tools"]
   :description "Graphic Equalizer CLJS"
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [org.clojure/clojurescript "1.7.28"]
-                 [figwheel "0.3.7"]
+                 [org.clojure/clojurescript "1.7.170"]
+                 [figwheel "0.4.1"]
                  [ring/ring-core "1.4.0"]
                  [reagent "0.5.1" :exclusions [cljsjs/react]]
                  [reagent-utils "0.1.5"]
                  [cljsjs/react-with-addons "0.13.3-0"]
                  [cljsjs/material "1.0.4-0"]
                  [secretary "1.2.3"]]
-  :plugins [[lein-cljsbuild "1.0.3"]
-            [lein-figwheel "0.3.7"]]
+  :plugins [[lein-cljsbuild "1.1.1"]
+            [lein-figwheel "0.4.1"]]
   :clean-targets ^{:protect false} ["resources/main.js"
                                     "resources/public/js/ui-core.js"
                                     "resources/public/js/ui-core.js.map"
-                                    "resources/public/js/ui-out"]
+                                    "resources/public/js/ui-out"
+                                    "resources/public/js/ui-release-out"]
   :cljsbuild
   {:builds
    [{:source-paths ["electron_src"]
@@ -36,16 +37,14 @@
     {:source-paths ["electron_src"]
      :id "electron-release"
      :compiler {:output-to "resources/main.js"
-                :optimizations :simple
-                :pretty-print true
-                :cache-analysis true}}
+                :optimizations :simple}}
     {:source-paths ["ui_src"]
      :id "frontend-release"
      :compiler {:output-to "resources/public/js/ui-core.js"
                 :output-dir "resources/public/js/ui-release-out"
                 :source-map "resources/public/js/ui-core.js.map"
+                :asset-path "js/ui-release-out"
                 :optimizations :simple
-                :cache-analysis true
                 :main "ui.core"}}]}
   :figwheel {:http-server-root "public"
              :ring-handler     figwheel-middleware/app
