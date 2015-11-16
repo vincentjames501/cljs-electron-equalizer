@@ -1,16 +1,8 @@
-[![Build Status](https://travis-ci.org/Gonzih/cljs-electron.svg?branch=master)](https://travis-ci.org/Gonzih/cljs-electron)
+# Equalizer using ClojureScript/Reagent/Electron
 
-# Clojurified Electron
+![](https://raw.githubusercontent.com/vincentjames501/cljs-electron-equalizer/master/demo.gif)
 
-![](https://raw.githubusercontent.com/Gonzih/cljs-electron/master/demo.gif)
-
-My attempt to recreate ClojureScript development workflow while developing desktop apps with [electron](http://electron.atom.io/).
-
-## What is currently included
-
-* ClojureScript (init script and ui code)
-* Figwheel for interactive development (+ serves webjars)
-* Reagent for UI
+A basic equalizer written in ClojureScript using Reagent & Electron.
 
 ## Running it
 
