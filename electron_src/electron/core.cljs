@@ -2,11 +2,11 @@
 
 (def ^:private main-window (atom nil))
 (def ^:private app (js/require "app"))
+(def ^:private darwin? (= "darwin" js/process.platform))
 
 (defn- init-menu
   []
   (let [menu (js/require "menu")
-        darwin? (= "darwin" (.-platform js/process))
         name (.getName app)
         template (cond-> []
                          darwin?
@@ -113,3 +113,4 @@
   (init-browser-window))
 
 (.on app "ready" init)
+(.on app "window-all-closed" #(.quit app))
