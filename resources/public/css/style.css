@@ -1,5 +1,10 @@
 body {
     -webkit-app-region: drag;
+    overflow: hidden;
+}
+
+button {
+    -webkit-app-region: no-drag;
 }
 
 #content {
@@ -95,4 +100,28 @@ img.drop-img {
 #encoding #complete i {
     font-size: 80px;
     transform: translate(-35px,-12px);
+}
+
+#main-close-button {
+    min-width: 30px;
+    height: 20px;
+    padding: 0 5px 2px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 12px;
+    line-height: normal;
+    text-transform: none !important;
+}
+
+#main-min-button {
+    min-width: 30px;
+    height: 20px;
+    padding: 0 5px 4px;
+    position: absolute;
+    top: 2px;
+    right: 35px;
+    font-size: 20px;
+    line-height: inherit;
+    text-transform: none !important;
 }

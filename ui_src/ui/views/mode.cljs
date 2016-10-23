@@ -5,11 +5,11 @@
             [ui.db :as db]
             [clojure.string :as str]))
 
+(def ^:private dialog (.-dialog (.-remote (js/require "electron"))))
+
 (defn- begin-with-mode
   [mode]
-  (let [remote (js/require "remote")
-        dialog (.require remote "dialog")
-        encoding-mode (db/cursor [:encoding-mode])
+  (let [encoding-mode (db/cursor [:encoding-mode])
         output (db/cursor [:output])
         selected-files (db/select [:selected-files])]
     (letfn [(cb [file-type save-to]
@@ -36,8 +36,9 @@
 (defn mode-component
   []
   [ui/default-transition
-   [:div#mode {:key "mode"}
-    [ui/button "Low" :click-fn #(begin-with-mode :low)]
-    [ui/button "Medium" :click-fn #(begin-with-mode :medium)]
-    [ui/button "High" :click-fn #(begin-with-mode :hgih)]
-    [ui/button "Cancel" :button-type :accent :click-fn #(secretary/dispatch! "#/")]]])
+   [ui/wrap-page
+    [:div#mode {:key "mode"}
+     [ui/button "Low" :click-fn #(begin-with-mode :low)]
+     [ui/button "Medium" :click-fn #(begin-with-mode :medium)]
+     [ui/button "High" :click-fn #(begin-with-mode :high)]
+     [ui/button "Cancel" :button-type :accent :click-fn #(secretary/dispatch! "#/")]]]])

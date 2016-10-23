@@ -3,6 +3,6 @@
   "version": "0.0.1",
   "main": "resources/main.js",
   "devDependencies": {
-    "gulp-electron": "0.0.9"
+    "gulp-electron": "0.1.3"
   }
 }

@@ -1,7 +1,11 @@
 (ns electron.core)
 
 (def ^:private main-window (atom nil))
-(def ^:private app (js/require "app"))
+(def ^:private electron (js/require "electron"))
+(def ^:private app (.-app electron))
+(def ^:private crash-reporter (.-crashReporter electron))
+(def ^:private menu (.-Menu electron))
+(def ^:private browser-window (.-BrowserWindow electron))
 (def ^:private darwin? (= "darwin" js/process.platform))
 (def ^:private is-development? (boolean (or (.-defaultApp js/process)
                                             (re-matches #"[\\/]electron-prebuilt[\\/]" (.-execPath js/process))
@@ -9,8 +13,7 @@
 
 (defn- init-menu
   []
-  (let [menu (js/require "menu")
-        name (.getName app)
+  (let [name (.getName app)
         template (cond-> []
                          darwin?
                          (conj {:label   name
@@ -53,24 +56,26 @@
                                                   :role        "paste"}
                                                  {:label       "Select All"
                                                   :accelerator "CmdOrCtrl+A"
-                                                  :role        "selectall"}]}
-                                      {:label   "View"
-                                       :submenu [{:label       "Reload"
-                                                  :accelerator "CmdOrCtrl+R"
-                                                  :click       (fn [_ focusedWindow]
-                                                                 (when focusedWindow
-                                                                   (.reload focusedWindow)))}
-                                                 {:label       "Toggle Full Screen"
-                                                  :accelerator (if darwin? "Ctrl+Command+F" "F11")
-                                                  :click       (fn [_ focusedWindow]
-                                                                 (when focusedWindow
-                                                                   (.setFullScreen focusedWindow (not (.isFullScreen focusedWindow)))))}
-                                                 {:label       "Toggle Developer Tools"
-                                                  :accelerator (if darwin? "Alt+Command+I" "Ctrl+Shift+I")
-                                                  :click       (fn [_ focusedWindow]
-                                                                 (when focusedWindow
-                                                                   (.toggleDevTools focusedWindow)))}]}
-                                      {:label   "Window"
+                                                  :role        "selectall"}]}]
+                                     (when is-development?
+                                       [{:label   "View"
+                                         :submenu [{:label       "Reload"
+                                                    :accelerator "CmdOrCtrl+R"
+                                                    :click       (fn [_ focusedWindow]
+                                                                   (when focusedWindow
+                                                                     (.reload focusedWindow)))}
+                                                   {:label       "Toggle Full Screen"
+                                                    :accelerator (if darwin? "Ctrl+Command+F" "F11")
+                                                    :click       (fn [_ focusedWindow]
+                                                                   (when focusedWindow
+                                                                     (let [full? (.isFullScreen focusedWindow)]
+                                                                       (.setFullScreen focusedWindow (not full?)))))}
+                                                   {:label       "Toggle Developer Tools"
+                                                    :accelerator (if darwin? "Alt+Command+I" "Ctrl+Shift+I")
+                                                    :click       (fn [_ focusedWindow]
+                                                                   (when focusedWindow
+                                                                     (.toggleDevTools focusedWindow)))}]}])
+                                     [{:label   "Window"
                                        :role    "window"
                                        :submenu [{:label       "Minimize"
                                                   :accelerator "CmdOrCtrl+M"
@@ -92,22 +97,24 @@
 
 (defn- init-crash-reporter
   []
-  (let [crash-reporter (js/require "crash-reporter")]
-    (.start crash-reporter)))
+  (.start crash-reporter (clj->js {:productName "CLJSGraphicEqualizer"
+                                   :companyName "Vincent Pizzo"
+                                   :submitURL   "https://your-domain.com/url-to-submit"
+                                   :autoSubmit  true})))
 
 (defn- init-browser-window
   []
-  (let [browser-window (js/require "browser-window")]
-    (reset! main-window (browser-window.
-                          (clj->js {:width           350
-                                    :height          370
-                                    :title-bar-style "hidden"
-                                    :web-preferences {:web-security false}
-                                    ;:resizable       false
-                                    })))
-    ; Path is relative to the compiled js file (main.js in our case)
-    (.loadUrl @main-window (str "file://" js/__dirname "/public/index.html"))
-    (.on @main-window "closed" #(reset! main-window nil))))
+  (reset! main-window (browser-window.
+                        (clj->js (merge {:width          350
+                                         :height         378
+                                         :webPreferences {:webSecurity false}
+                                         :resizable      is-development?}
+                                        (if darwin?
+                                          {:titleBarStyle "hidden"}
+                                          {:frame false})))))
+  ; Path is relative to the compiled js file (main.js in our case)
+  (.loadURL @main-window (str "file://" js/__dirname "/public/index.html"))
+  (.on @main-window "closed" #(reset! main-window nil)))
 
 (defn- init
   []

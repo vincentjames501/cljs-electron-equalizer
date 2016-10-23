@@ -6,7 +6,8 @@
             [ui.db :as db]
             [clojure.string :as str]))
 
-(def fs (js/require "fs"))
+(def ^:private fs (js/require "fs"))
+(def ^:private path (js/require "path"))
 
 (defn- file-exists?
   [f]
@@ -26,7 +27,7 @@
 
 (defn- get-output-file
   [file-type output selected-file]
-  (let [selected-file-name-with-extension (last (str/split selected-file #"/"))
+  (let [selected-file-name-with-extension (last (str/split selected-file (.-sep path)))
         selected-file-name-segments (str/split selected-file-name-with-extension #"\.")
         selected-file-name (apply str (butlast selected-file-name-segments))
         extension (last selected-file-name-segments)]
@@ -64,14 +65,14 @@
                                   (.log js/console (clj->js e))
                                   (if (= 1 (count @selected-files))
                                     (do (reset! encoding-state {:progress 100 :process nil :state :success})
-                                        (.setTimeout js/window go-home! 3000))
+                                        (js/window.setTimeout go-home! 3000))
                                     (do (swap! selected-files rest)
                                         (encode! (inc file-index) file-count))))
                                 (fn [e]
                                   (.log js/console (clj->js e))
                                   (reset! encoding-state {:progress 100 :process nil :state :fail})
                                   (js/alert "There was a problem equalizing your selected file(s).")
-                                  (.setTimeout js/window go-home! 5000))
+                                  (js/window.setTimeout go-home! 5000))
                                 (fn [progress]
                                   (swap! encoding-state
                                          assoc
@@ -99,20 +100,21 @@
 
 (defn encoding-component []
   [ui/default-transition
-   [:div#encoding {:key "encoding"}
-    (case (:state @encoding-state)
-      :encoding
-      [:div
-       [:div.encoding-progress (str (:progress @encoding-state) "%")]
-       [ui/spinner]
-       [ui/button "Cancel" :button-type :accent :click-fn cancel-encoding!]]
-      :success
-      [ui/default-transition
+   [ui/wrap-page
+    [:div#encoding {:key "encoding"}
+     (case (:state @encoding-state)
+       :encoding
        [:div
-        [checkmark "check" true]
-        [:h4 "Success!"]]]
-      :fail
-      [ui/default-transition
-       [:div
-        [checkmark "clear" false]
-        [:h4 "Whoops!"]]])]])
+        [:div.encoding-progress (str (:progress @encoding-state) "%")]
+        [ui/spinner]
+        [ui/button "Cancel" :button-type :accent :click-fn cancel-encoding!]]
+       :success
+       [ui/default-transition
+        [:div
+         [checkmark "check" true]
+         [:h4 "Success!"]]]
+       :fail
+       [ui/default-transition
+        [:div
+         [checkmark "clear" false]
+         [:h4 "Whoops!"]]])]]])

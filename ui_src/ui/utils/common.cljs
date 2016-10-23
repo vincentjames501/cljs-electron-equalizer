@@ -1,6 +1,9 @@
 (ns ui.utils.common
   (:require [reagent.core :as reagent]))
 
+(def ^:private remote (.-remote (js/require "electron")))
+(def ^:private darwin? (= "darwin" js/process.platform))
+
 (def css-transition-group
   (reagent/adapt-react-class js/React.addons.CSSTransitionGroup))
 
@@ -24,3 +27,20 @@
 (defn spinner
   []
   [:div.mdl-spinner.mdl-js-spinner.is-active])
+
+(defn wrap-page
+  [content]
+  [:div
+   (when-not darwin?
+     [:div
+      [:button#main-close-button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--accent
+       {:onClick (fn []
+                   (let [current-window (.getCurrentWindow remote)]
+                     (.close current-window)))}
+       "x"]
+      [:button#main-min-button.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.mdl-button--colored
+       {:onClick (fn []
+                   (let [current-window (.getCurrentWindow remote)]
+                     (.minimize current-window)))}
+       "-"]])
+   content])

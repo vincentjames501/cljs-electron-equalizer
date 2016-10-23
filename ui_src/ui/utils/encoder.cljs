@@ -1,6 +1,7 @@
 (ns ui.utils.encoder)
 
-(def proc (js/require "child_process"))
+(def ^:private proc (js/require "child_process"))
+(def ^:private darwin? (= "darwin" js/process.platform))
 
 (defn- duration-str->float
   [s]
@@ -28,21 +29,22 @@
 (defn- get-encoding-opts
   [encoding-mode]
   (case encoding-mode
-    :low "equalizer=f=440:width_type=o:width=2:g=5"
-    :medium "equalizer=f=440:width_type=o:width=2:g=5"
-    :high "equalizer=f=440:width_type=o:width=2:g=5"))
+    :low "equalizer=f=80:width_type=q:width=20:g=-90,equalizer=f=100:width_type=q:width=20:g=-60,equalizer=f=180:width_type=q:width=20:g=-3"
+    :medium "equalizer=f=80:width_type=q:width=20:g=-90,equalizer=f=100:width_type=q:width=20:g=-90,equalizer=f=180:width_type=q:width=20:g=-3"
+    :high "equalizer=f=80:width_type=q:width=20:g=-90,equalizer=f=100:width_type=q:width=20:g=-90,equalizer=f=150:width_type=q:width=20:g=-40,equalizer=f=250:width_type=q:width=20:g=-3"))
 
 (defn run-process
   [input output encoding-mode success-fn error-fn progress-fn]
   (let [duration (atom nil)
-        spawned-processes (.spawn proc
-                                  (str js/__dirname "/ffmpeg")
-                                  (clj->js ["-y"            ; Overwrite
-                                            "-i" input      ; Input File
-                                            "-af" (get-encoding-opts encoding-mode) ; Equalizer
-                                            output          ; Output File
-                                            ]))]
-    (.on (.-stderr spawned-processes) "data" (partial parse-input duration progress-fn))
-    (.on (.-stdout spawned-processes) "data" (partial parse-input duration progress-fn))
-    (.on spawned-processes "error" error-fn)
-    (.on spawned-processes "exit" success-fn)))
+        proc (.spawn proc
+                     (str js/__dirname (if darwin? "/ffmpeg" "\\ffmpeg.exe"))
+                     (clj->js ["-y"            ; Overwrite
+                               "-i" input      ; Input File
+                               "-af" (get-encoding-opts encoding-mode) ; Equalizer
+                               "-c:v" "copy"   ; Keep Original Video Source
+                               output          ; Output File
+                               ]))]
+    (.on (.-stderr proc) "data" (partial parse-input duration progress-fn))
+    (.on (.-stdout proc) "data" (partial parse-input duration progress-fn))
+    (.on proc "error" error-fn)
+    (.on proc "exit" success-fn)))
