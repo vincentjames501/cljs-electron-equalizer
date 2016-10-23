@@ -3,6 +3,9 @@
 (def ^:private main-window (atom nil))
 (def ^:private app (js/require "app"))
 (def ^:private darwin? (= "darwin" js/process.platform))
+(def ^:private is-development? (boolean (or (.-defaultApp js/process)
+                                            (re-matches #"[\\/]electron-prebuilt[\\/]" (.-execPath js/process))
+                                            (re-matches #"[\\/]electron[\\/]" (.-execPath js/process)))))
 
 (defn- init-menu
   []
