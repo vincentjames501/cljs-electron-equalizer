@@ -8,3 +8,4 @@ figwheel_server.log
 release/
 .cache/
 node_modules/
+.lein-repl-history
