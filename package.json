@@ -2,7 +2,13 @@
   "name": "GraphicEqualizer",
   "version": "0.0.1",
   "main": "resources/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "npm build.js"
+  },
   "devDependencies": {
-    "gulp-electron": "0.1.3"
+    "electron": "^1.6.2",
+    "electron-packager": "^8.6.0",
+    "electron-winstaller": "^2.5.2"
   }
 }
