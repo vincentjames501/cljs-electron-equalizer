@@ -5,7 +5,7 @@ resources/main.js
 figwheel_server.log
 .idea/
 *.iml
-release/
+releases/
 .cache/
 node_modules/
 .lein-repl-history
