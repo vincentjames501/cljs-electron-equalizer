@@ -1,5 +1,7 @@
 {
-  "name": "GraphicEqualizer",
+  "name": "AudioEqualizer",
+  "description": "An audio equalizer for Voice in the Sea",
+  "main": "main.js",
   "version": "0.0.1",
-  "main": "main.js"
+  "author": "Vincent Pizzo"
 }
