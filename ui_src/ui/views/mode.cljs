@@ -24,7 +24,7 @@
                                                                                first
                                                                                (str/split #"\.")
                                                                                last
-                                                                               (->> (into [])))}
+                                                                               (->> (conj [])))}
                                                 {:name "All Files" :extensions ["*"]}]
                                    :properties ["openFile" "createDirectory"]})
                          (partial cb :file))
@@ -38,7 +38,10 @@
   [ui/default-transition
    [ui/wrap-page
     [:div#mode {:key "mode"}
+     [:div.instructions "Please choose an equalization setting:"]
      [ui/button "Low" :click-fn #(begin-with-mode :low)]
      [ui/button "Medium" :click-fn #(begin-with-mode :medium)]
      [ui/button "High" :click-fn #(begin-with-mode :high)]
-     [ui/button "Cancel" :button-type :accent :click-fn #(secretary/dispatch! "#/")]]]])
+     [ui/button "Cancel" :button-type :accent :click-fn #(secretary/dispatch! "#/")]
+     [:div.instructions-small (str "For videos with less distortion, choose low, with "
+                                   "more distortion, choose a higher setting.")]]]])
