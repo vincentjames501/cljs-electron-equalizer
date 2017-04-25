@@ -1,14 +1,52 @@
 {
-  "name": "GraphicEqualizer",
+  "name": "AudioEqualizer",
+  "description": "An audio equalizer for Voice in the Sea",
   "version": "0.0.1",
+  "author": "Vincent Pizzo",
   "main": "resources/main.js",
   "scripts": {
     "start": "electron .",
-    "build": "npm build.js"
+    "package": "build -mw"
+  },
+  "build": {
+    "productName": "Audio Equalizer",
+    "appId": "com.voiceinthesea.AudioEqualizer",
+    "compression": "maximum",
+    "asar": false,
+    "mac": {
+      "target": "dmg",
+      "icon": "icon.icns"
+    },
+    "dmg": {
+      "background": "release_assets/DMGBackground.png",
+      "contents": [
+        {
+          "x": 110,
+          "y": 160
+        },
+        {
+          "x": 390,
+          "y": 160,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "icon": "icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "releases",
+      "app": "resources"
+    }
   },
   "devDependencies": {
+    "concurrently": "^3.4.0",
     "electron": "^1.6.2",
-    "electron-packager": "^8.6.0",
-    "electron-winstaller": "^2.5.2"
+    "electron-builder": "^16.6.0"
   }
 }
